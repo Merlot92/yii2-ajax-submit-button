@@ -50,22 +50,22 @@ class AjaxSubmitButton extends Widget
     public $ajaxOptions = [];
 
     /**
-	 * @var array the HTML attributes for the widget container tag.
-	 */
-	public $options = [];
+     * @var array the HTML attributes for the widget container tag.
+     */
+    public $options = [];
 
     /**
-	 * @var string the tag to use to render the button
-	 */
-	public $tagName = 'button';
-	/**
-	 * @var string the button label
-	 */
-	public $label = 'Button';
-	/**
-	 * @var boolean whether the label should be HTML-encoded.
-	 */
-	public $encodeLabel = true;
+     * @var string the tag to use to render the button
+     */
+    public $tagName = 'button';
+    /**
+     * @var string the button label
+     */
+    public $label = 'Button';
+    /**
+     * @var boolean whether the label should be HTML-encoded.
+     */
+    public $encodeLabel = true;
     /**
      * @var string js object name.
      *      it is unused when useWithActiveForm is enabled
@@ -79,23 +79,23 @@ class AjaxSubmitButton extends Widget
 
 
 
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
-		parent::init();
+    /**
+     * Initializes the widget.
+     */
+    public function init()
+    {
+        parent::init();
 
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->getId();
-		}
-	}
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
+    }
 
     public function run()
     {
-    	parent::run();
+        parent::run();
 
-    	echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
+        echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
         
         if (!empty($this->ajaxOptions)) {
             
@@ -111,20 +111,20 @@ class AjaxSubmitButton extends Widget
         $view = $this->getView();
 
         if(!isset($this->ajaxOptions['type'])) {
-            $this->ajaxOptions['type'] = new JsExpression('$(this).parents("form").attr("method")');
+            $this->ajaxOptions['type'] = new JsExpression('jQuery(this).parents("form").attr("method")');
         }
 
         if(!isset($this->ajaxOptions['url'])) {
-            $this->ajaxOptions['url'] = new JsExpression('$(this).parents("form").attr("action")');
+            $this->ajaxOptions['url'] = new JsExpression('jQuery(this).parents("form").attr("action")');
         }
 
         if(!isset($this->ajaxOptions['data']) && isset($this->ajaxOptions['type']))
-            $this->ajaxOptions['data'] = new JsExpression('$(this).parents("form").serialize()');
+            $this->ajaxOptions['data'] = new JsExpression('jQuery(this).parents("form").serialize()');
 
         $this->ajaxOptions= Json::encode($this->ajaxOptions);
-        $view->registerJs("$('#".$this->options['id']."').click(function() {
+        $view->registerJs("jQuery('#".$this->options['id']."').click(function() {
                 " . (null !== $this->clickedButtonVarName ? "var {$this->clickedButtonVarName} = this;" : "") . "
-                $.ajax(" . $this->ajaxOptions . ");
+                jQuery.ajax(" . $this->ajaxOptions . ");
                 return false;
             });");
     }
@@ -134,22 +134,22 @@ class AjaxSubmitButton extends Widget
         $view = $this->getView();
 
         if(!isset($this->ajaxOptions['type'])) {
-            $this->ajaxOptions['type'] = new JsExpression('$(this).attr("method")');
+            $this->ajaxOptions['type'] = new JsExpression('jQuery(this).attr("method")');
         }
 
         if(!isset($this->ajaxOptions['url'])) {
-            $this->ajaxOptions['url'] = new JsExpression('$(this).attr("action")');
+            $this->ajaxOptions['url'] = new JsExpression('jQuery(this).attr("action")');
         }
 
         if(!isset($this->ajaxOptions['data']) && isset($this->ajaxOptions['type']))
-            $this->ajaxOptions['data'] = new JsExpression('$(this).serialize()');
+            $this->ajaxOptions['data'] = new JsExpression('jQuery(this).serialize()');
 
         $this->ajaxOptions= Json::encode($this->ajaxOptions);
 
 $js = <<<SEL
-        $(document).on('beforeSubmit', "#{$this->useWithActiveForm}", function () {
-            if ($(this).find('.has-error').length < 1) {
-                $.ajax({$this->ajaxOptions});
+        jQuery(document).on('beforeSubmit', "#{$this->useWithActiveForm}", function () {
+            if (jQuery(this).find('.has-error').length < 1) {
+                jQuery.ajax({$this->ajaxOptions});
             }
             return false; // Cancel form submitting.
         });
